@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/adi961/zeromq_chat_server_node/issues"
   },
-  "homepage": "https://github.com/adi961/zeromq_chat_server_node#readme"
+  "homepage": "https://github.com/adi961/zeromq_chat_server_node#readme",
+  "dependencies": {
+    "zmq": "^2.15.3"
+  }
 }
