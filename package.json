@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/adi961/zeromq_chat_server_node#readme",
   "dependencies": {
+    "unix-timestamp": "^0.2.0",
+    "uuid": "^3.2.1",
     "zmq": "^2.15.3"
   }
 }
