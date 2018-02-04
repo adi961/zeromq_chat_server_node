@@ -1,4 +1,5 @@
 const uuid = require('uuid/v1')
+const bonjour = require('bonjour')()
 const timestamp = require('unix-timestamp')
 timestamp.round = true
 const zmq = require('zmq')
@@ -6,14 +7,17 @@ const dirClient = zmq.socket('rep')
 const broadcast = zmq.socket('pub')
 
 var clients = [
-        {uuid :'s893h3ghe', name : 'Adrian'},
-        {uuid :'sds893h3ghe', name : 'Peter'},
-        {uuid :'sdsdsfd234', name : 'Klaus'}
+        // {uuid :'s893h3ghe', name : 'Adrian'},
+        // {uuid :'sds893h3ghe', name : 'Peter'},
+        // {uuid :'sdsdsfd234', name : 'Klaus'}
     ];
 
 
 const dirClientPort = '5555',
         broadcastPort = '8688'
+
+//bonjour.publish({name: 'Code chat server', port: dirClientPort, type: 'ccp', protocol: 'tcp'})
+bonjour.publish({ name: 'Code chat server', type: 'tcp', port: dirClientPort, txt: {service: 'cpp', brPort: broadcastPort} })
 
 function find(array, type, searchFor){
     return array.some(element => {
@@ -30,7 +34,7 @@ dirClient.on('message', function(msg) {
   
     console.log('recived payload', payload)
     //#1
-    if(payload.name) {
+    if(payload.name) { //check if user already exists
         var isNameValid = !find(clients, 'name', payload)
         console.log('search result:', isNameValid)
         if(isNameValid === false){
@@ -46,7 +50,7 @@ dirClient.on('message', function(msg) {
             console.log('clients: ', clients)
             dirClient.send(JSON.stringify({uuid: user.uuid}))
         }
-    }else if(payload.uuid && payload.content) {
+    }else if(payload.uuid && payload.content) { // Broadcast recived message from client
         console.log('recived content:', payload.content)
 
         if(payload.content.length < 65935 && find(clients, 'uuid', payload)) {
@@ -69,6 +73,8 @@ dirClient.on('message', function(msg) {
     }
     
 })
+
+
 dirClient.bind("tcp://*:"+dirClientPort, function(err) {
     if(err) {
         console.log(err)
